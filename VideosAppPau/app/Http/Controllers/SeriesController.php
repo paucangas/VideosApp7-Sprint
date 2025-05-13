@@ -35,19 +35,23 @@ class SeriesController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'image' => 'nullable|string',
-            'user_name' => 'nullable|string|max:255',
-            'user_photo_url' => 'nullable|string',
-            'published_at' => 'nullable|date',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validate image file
         ]);
 
-        $request->merge([
-            'user_name' => auth()->user()->name,
-            'user_photo_url' => auth()->user()->profile_photo_url,
-            'published_at' => now(),
-        ]);
+        $data = $request->all();
 
-        Serie::create($request->all());
+        // Handle file upload
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $fileName = $file->store('images', 'public'); // Store file in 'storage/app/public/images'
+            $data['image'] = basename($fileName); // Save only the file name
+        }
+
+        $data['user_name'] = auth()->user()->name;
+        $data['user_photo_url'] = auth()->user()->profile_photo_url;
+        $data['published_at'] = now();
+
+        Serie::create($data);
 
         return redirect()->route('series.index')->with('success', 'Sèrie creada amb èxit!.');
     }

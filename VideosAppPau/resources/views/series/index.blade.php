@@ -9,38 +9,32 @@
             <button type="submit"><i class="fas fa-search"></i> Cercar</button>
         </form>
 
-        <div class="series-grid">
-            @foreach ($series as $serie)
-                <div class="series-card" onclick="window.location='{{ route('series.show', $serie->id) }}'">
-                    <div class="series-thumbnail">
-                        🎬
+            <div class="top">
+                @if (Auth::check())
+                    <div class="button">
+                        <a href="{{ route('series.create') }}" class="btn-create-serie">Crear Serie</a>
                     </div>
+                @endif
+            </div>
 
-                    <div class="series-info">
-                        <h5 class="series-title">{{ $serie->title }}</h5>
-                        <p class="series-description">{{ \Str::limit($serie->description, 60) }}</p>
-                        <p class="series-date">
-                            {{ $serie->published_at ? \Carbon\Carbon::parse($serie->published_at)->format('d/m/Y') : 'No publicada' }}
-                        </p>
-
-                        @if ($serie->user_name)
-                            <div class="series-user">
-                                @if ($serie->user_photo_url)
-                                    <img src="{{ $serie->user_photo_url }}" alt="Foto de perfil" class="avatar">
-                                @else
-                                    <div class="avatar alt-avatar">
-                                        {{ strtoupper(substr($serie->user_name, 0, 1)) }}
-                                    </div>
-                                @endif
-                                <span>{{ $serie->user_name }}</span>
-                            </div>
-                        @endif
-
-                        <a href="{{ route('series.show', $serie->id) }}" class="btn-view">Veure Detall</a>
+            <div class="series-grid">
+                @foreach ($series as $serie)
+                    <div class="series-card">
+                        <div class="series-thumbnail">
+                            @if ($serie->image)
+                                <img src="{{ asset('storage/images/' . $serie->image) }}" alt="Thumbnail of {{ $serie->title }}" class="img-fluid">
+                            @else
+                                <span role="img" aria-label="Camera Emoji">📷</span>
+                            @endif
+                        </div>
+                        <div class="series-info">
+                            <h3 class="series-title">{{ $serie->title }}</h3>
+                            <p class="series-description">{{ \Str::limit($serie->description, 100) }}</p>
+                            <a href="{{ route('series.show', $serie->id) }}" class="btn-view">View Details</a>
+                        </div>
                     </div>
-                </div>
-            @endforeach
-        </div>
+                @endforeach
+            </div>
     </div>
 
     <style>
@@ -61,6 +55,26 @@
             margin-bottom: 30px;
         }
 
+        .top {
+            display: flex;
+            justify-content: start;
+            margin-bottom: 30px;
+        }
+
+        .btn-create-serie {
+            padding: 12px 20px;
+            background-color: #2ecc71;
+            color: white;
+            font-weight: bold;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-create-serie:hover {
+            background-color: #27ae60;
+        }
+
         .search-form {
             display: flex;
             gap: 10px;
@@ -77,7 +91,7 @@
 
         .search-form button {
             padding: 12px 20px;
-            background-color: #3498db;
+            background-color: #4e73df;
             color: white;
             font-weight: bold;
             border: none;
@@ -99,7 +113,7 @@
         .series-card {
             background: white;
             border-radius: 12px;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.38);
             transition: transform 0.3s ease;
             cursor: pointer;
             overflow: hidden;
@@ -124,6 +138,15 @@
         }
 
         .series-title {
+            color: #44ef8d;
+        }
+
+        .series-description{
+            color: black;
+            font-weight: bold;
+        }
+
+        .series-title {
             font-size: 16px;
             font-weight: 600;
             margin-bottom: 6px;
@@ -134,7 +157,6 @@
 
         .series-description {
             font-size: 14px;
-            color: #606060;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -197,4 +219,16 @@
             }
         }
     </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const successMessage = document.querySelector('.success-message');
+
+            if (successMessage) {
+                setTimeout(function() {
+                    successMessage.style.display = 'none';
+                }, 4000); // 4000ms = 4 segons
+            }
+        });
+    </script>
 </x-videos-app-layout>

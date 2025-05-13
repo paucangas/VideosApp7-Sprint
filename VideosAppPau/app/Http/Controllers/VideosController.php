@@ -82,7 +82,7 @@ class VideosController extends Controller
 
         Event::dispatch(new VideoCreated($video));
 
-        return redirect()->route('videos.index');
+        return redirect()->route('videos.index')->with('success', 'Video creat correctament');
     }
     public function edit($id)
     {
@@ -120,7 +120,7 @@ class VideosController extends Controller
 
         $video->update($validated);
 
-        return redirect()->route('videos.index');
+        return redirect()->route('videos.index')->with('success', 'Video actualitzat correctament');
     }
 
     public function destroy($id)
@@ -135,6 +135,6 @@ class VideosController extends Controller
 
         $video->delete();
 
-        return redirect()->route('videos.index');
+        return redirect()->route('videos.index')->with('success', 'Video eliminat correctament');
     }
 }
