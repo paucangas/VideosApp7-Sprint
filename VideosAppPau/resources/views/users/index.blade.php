@@ -12,6 +12,18 @@
             </div>
         </form>
 
+        @if(session('success'))
+            <div class="alert alert-success" id="success-alert">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="alert alert-danger" id="error-alert">
+                {{ session('error') }}
+            </div>
+        @endif
+
         <div class="user-list">
             @foreach($users as $user)
                 <div class="user-card">
@@ -89,7 +101,7 @@
 
         .user-list {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 20px;
             margin-top: 30px;
         }
@@ -161,7 +173,19 @@
             text-decoration: none;
         }
 
-        .btn-info:hover {
+        .alert {
+             padding: 15px;
+             margin-bottom: 20px;
+             border-radius: 4px;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+
+    .btn-info:hover {
             background-color: #0056b3;
         }
 
@@ -174,21 +198,33 @@
             font-size: 18px;
         }
 
-        @media (max-width: 768px) {
-            .user-card {
-                flex-direction: column;
-                text-align: center;
+        @media (max-width: 992px) {
+            .user-list {
+                grid-template-columns: repeat(2, 1fr);
             }
+        }
 
-            .user-avatar {
-                margin-right: 0;
-                margin-bottom: 15px;
-            }
-
-            .search-bar {
-                width: 100%;
+        @media (max-width: 600px) {
+            .user-list {
+                grid-template-columns: 1fr;
             }
         }
     </style>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const alert = document.getElementById("success-alert");
+            if (alert) {
+                setTimeout(() => {
+                    alert.style.transition = "opacity 0.5s ease-out";
+                    alert.style.opacity = 0;
+                    setTimeout(() => {
+                        alert.remove();
+                    }, 500); // espera a que acabi la transició
+                }, 3000); // desapareix als 3 segons
+            }
+        });
+    </script>
+
 
 </x-videos-app-layout>

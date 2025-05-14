@@ -2,13 +2,10 @@
     <div class="user-container">
         <h1>Gestió d'Usuaris</h1>
 
-        @if(session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
-        @endif
-
         <a href="{{ route('users.manage.create') }}" class="btn-create-user">Crear Usuari</a>
 
-        <div class="table-responsive">
+        {{-- Vista de Taula per a escriptoris --}}
+        <div class="table-responsive desktop-view">
             <table class="user-table">
                 <thead>
                 <tr>
@@ -36,6 +33,25 @@
                 @endforeach
                 </tbody>
             </table>
+        </div>
+
+        {{-- Vista de targetes per a mòbils --}}
+        <div class="mobile-view">
+            @foreach($users as $user)
+                <div class="user-card">
+                    <p><strong>ID:</strong> {{ $user->id }}</p>
+                    <p><strong>Nom:</strong> {{ $user->name }}</p>
+                    <p><strong>Email:</strong> {{ $user->email }}</p>
+                    <div class="actions">
+                        <a href="{{ route('users.manage.edit', $user) }}" class="btn btn-warning">Editar</a>
+                        <form action="{{ route('users.manage.destroy', $user) }}" method="POST" style="display:inline;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('Estàs segur?')">Eliminar</button>
+                        </form>
+                    </div>
+                </div>
+            @endforeach
         </div>
     </div>
 
@@ -124,6 +140,7 @@
 
         .btn-warning {
             background-color: #ffc107;
+            border: 2px solid #000000;
         }
 
         .btn-warning:hover {
@@ -132,13 +149,44 @@
 
         .btn-danger {
             background-color: #dc3545;
+            cursor: pointer;
         }
 
         .btn-danger:hover {
             background-color: #c82333;
         }
 
+        /* Targetes d'usuari per a mòbils */
+        .mobile-view {
+            display: none;
+        }
+
+        .user-card {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .user-card p {
+            margin: 8px 0;
+            font-size: 14px;
+        }
+
+        .user-card .actions {
+            margin-top: 10px;
+        }
+
         @media (max-width: 768px) {
+            .desktop-view {
+                display: none;
+            }
+
+            .mobile-view {
+                display: block;
+            }
+
             h1 {
                 font-size: 22px;
             }
@@ -152,11 +200,28 @@
                 font-size: 12px;
                 padding: 6px 10px;
             }
-
-            .user-table th,
-            .user-table td {
-                padding: 10px 12px;
-            }
         }
     </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const successAlert = document.getElementById('alert-success');
+            const errorAlert = document.getElementById('alert-error');
+
+            if (successAlert) {
+                setTimeout(() => {
+                    successAlert.style.transition = 'opacity 0.5s ease';
+                    successAlert.style.opacity = '0';
+                    setTimeout(() => successAlert.remove(), 500);
+                }, 4000);
+            }
+
+            if (errorAlert) {
+                setTimeout(() => {
+                    errorAlert.style.transition = 'opacity 0.5s ease';
+                    errorAlert.style.opacity = '0';
+                    setTimeout(() => errorAlert.remove(), 500);
+                }, 4000);
+            }
+        });
+    </script>
 </x-videos-app-layout>

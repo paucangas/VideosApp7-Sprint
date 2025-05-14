@@ -29,46 +29,65 @@
                 <input type="password" name="password" data-qa="input-password" required>
             </div>
 
-            <button type="submit" class="btn-outline">Crear usuari</button>
+            <div class="form-field">
+                <label for="role">Rol</label>
+                <select name="role" class="form-control" required>
+                    @foreach($roles as $role)
+                        <option value="{{ $role->name }}">{{ ucfirst($role->name) }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <button type="submit" class="btn-primary">Crear usuari</button>
         </form>
     </div>
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+        }
+
         .edit-user-wrapper {
-            max-width: 500px;
-            margin: 50px auto;
+            max-width: 480px;
+            margin: 60px auto;
             background: #ffffff;
-            padding: 30px;
-            border: 1px solid #e0e0e0;
-            border-radius: 10px;
+            padding: 40px;
+            border: 1px solid #e3e6ec;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
         }
 
         h1 {
-            font-size: 22px;
+            font-size: 24px;
             font-weight: 700;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
             text-align: center;
-            color: #222;
+            color: #333;
         }
 
         .alert-error {
-            background-color: #ffe0e0;
-            color: #a33;
-            padding: 12px 18px;
-            border-left: 4px solid #c00;
-            border-radius: 6px;
-            margin-bottom: 20px;
-            font-size: 14px;
+            background-color: #ffeef0;
+            color: #b71c1c;
+            padding: 14px 20px;
+            border-left: 5px solid #d32f2f;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            font-size: 15px;
         }
 
         .form-field {
-            margin-bottom: 20px;
+            margin-bottom: 22px;
         }
 
         label {
             display: block;
-            margin-bottom: 6px;
-            font-weight: 500;
+            margin-bottom: 8px;
+            font-weight: 600;
             color: #444;
         }
 
@@ -76,50 +95,52 @@
         input[type="email"],
         input[type="password"] {
             width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 14px;
-            transition: border 0.3s, box-shadow 0.3s;
+            padding: 12px 14px;
+            border: 1px solid #cfd8dc;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
 
         input:focus {
-            border-color: #555;
-            box-shadow: 0 0 5px rgba(85, 85, 85, 0.3);
+            border-color: #4a90e2;
+            box-shadow: 0 0 6px rgba(74, 144, 226, 0.3);
             outline: none;
         }
 
-        .btn-outline {
-            display: block;
+        .btn-primary {
             width: 100%;
-            background-color: transparent;
-            color: #007bff;
-            font-weight: 600;
-            font-size: 15px;
-            padding: 12px;
-            border: 2px solid #007bff;
-            border-radius: 6px;
-            transition: all 0.3s ease-in-out;
-            cursor: pointer;
-        }
-
-        .btn-outline:hover {
             background-color: #007bff;
             color: white;
+            font-weight: 600;
+            font-size: 16px;
+            padding: 12px 0;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease;
         }
 
-        @media (max-width: 480px) {
+        .btn-primary:hover {
+            background-color: #0069d9;
+        }
+
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+
+        @media (max-width: 500px) {
             .edit-user-wrapper {
-                padding: 20px;
+                padding: 25px;
+                margin: 40px 15px;
             }
 
             h1 {
                 font-size: 20px;
             }
 
-            .btn-outline {
-                font-size: 14px;
-                padding: 10px;
+            .btn-primary {
+                font-size: 15px;
             }
         }
     </style>

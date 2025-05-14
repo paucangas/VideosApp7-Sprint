@@ -1,33 +1,48 @@
 <x-videos-app-layout>
-    <div class="container">
-        <h1>Gestió de Vídeos</h1>
-        <a href="{{ route('videos.manage.create') }}" class="btn btn-create-video mb-3">Crear Vídeo</a>
+    <div class="manage-container">
+        <div class="manage-header">
+            <h1 class="manage-title">Gestió de Vídeos</h1>
+            <a href="{{ route('videos.manage.create') }}" class="btn-create">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                Crear Vídeo
+            </a>
+        </div>
 
         <!-- Missatge d'èxit -->
         @if (session('success'))
-            <div id="flash-message" class="alert alert-success mt-3">
+            <div id="flash-message" class="alert alert-success">
+                <svg xmlns="http://www.w3.org/2000/svg" class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
                 {{ session('success') }}
             </div>
         @endif
 
         <!-- Missatge d'error -->
         @if (session('error'))
-            <div id="flash-message" class="alert alert-danger mt-3">
+            <div id="flash-message" class="alert alert-danger">
+                <svg xmlns="http://www.w3.org/2000/svg" class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
                 {{ session('error') }}
             </div>
         @endif
 
-        <!-- Comencem amb la taula per a pantalles més grans -->
-        <div class="table-responsive">
-            <table class="table table-striped table-bordered mt-3">
+        <!-- Taula per a pantalles més grans -->
+        <div class="table-container">
+            <table class="manage-table">
                 <thead>
-                <tr class="table-header">
+                <tr>
                     <th>Títol</th>
                     <th>Descripció</th>
                     <th>URL</th>
-                    <th>Data de publicació</th>
-                    <th>Anterior</th>
-                    <th>Següent</th>
+                    <th>Data</th>
                     <th>Sèrie</th>
                     <th>Accions</th>
                 </tr>
@@ -35,20 +50,43 @@
                 <tbody>
                 @foreach ($videos as $video)
                     <tr>
-                        <td>{{ $video->title }}</td>
-                        <td>{{ \Str::limit($video->description, 50) }}</td>
-                        <td><a href="{{ $video->url }}" target="_blank">{{ $video->url }}</a></td>
-                        <td>{{ \Carbon\Carbon::parse($video->published_at)->format('d-m-Y') }}</td>
-                        <td>{{ $video->previous }}</td>
-                        <td>{{ $video->next }}</td>
-                        <td>{{ $video->series_id }}</td>
-                        <td>
-                            <a href="{{ route('videos.manage.edit', $video->id) }}" class="btn btn-warning btn-sm">Editar</a>
-                            <form action="{{ route('videos.manage.destroy', $video->id) }}" method="POST" onsubmit="return confirm('Estas segur de que vols eliminiar el vídeo?');" style="display:inline;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
-                            </form>
+                        <td class="title-cell">{{ $video->title }}</td>
+                        <td class="description-cell">{{ \Str::limit($video->description, 50) }}</td>
+                        <td class="url-cell">
+                            <a href="{{ $video->url }}" target="_blank" class="url-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="url-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                    <polyline points="15 3 21 3 21 9"></polyline>
+                                    <line x1="10" y1="14" x2="21" y2="3"></line>
+                                </svg>
+                                Veure
+                            </a>
+                        </td>
+                        <td class="date-cell">{{ \Carbon\Carbon::parse($video->published_at)->format('d/m/Y') }}</td>
+                        <td class="series-cell">{{ $video->series_id ?: 'Cap' }}</td>
+                        <td class="actions-cell">
+                            <div class="action-buttons">
+                                <a href="{{ route('videos.manage.edit', $video->id) }}" class="btn-edit">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                    </svg>
+                                    <span>Editar</span>
+                                </a>
+                                <form action="{{ route('videos.manage.destroy', $video->id) }}" method="POST" onsubmit="return confirm('Estas segur de que vols eliminiar el vídeo?');" class="delete-form">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn-delete">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="3 6 5 6 21 6"></polyline>
+                                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                            <line x1="10" y1="11" x2="10" y2="17"></line>
+                                            <line x1="14" y1="11" x2="14" y2="17"></line>
+                                        </svg>
+                                        <span>Eliminar</span>
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                 @endforeach
@@ -57,184 +95,437 @@
         </div>
 
         <!-- Mode responsive - mostrar vídeos com a llista -->
-        <div class="video-list d-block d-md-none">
+        <div class="video-cards">
             @foreach ($videos as $video)
-                <div class="video-item">
-                    <h3>{{ $video->title }}</h3>
-                    <p><strong>Descripció:</strong> {{ \Str::limit($video->description, 100) }}</p>
-                    <p><strong>URL:</strong> <a href="{{ $video->url }}" target="_blank">{{ $video->url }}</a></p>
-                    <p><strong>Data de publicació:</strong> {{ \Carbon\Carbon::parse($video->published_at)->format('d-m-Y') }}</p>
-                    <p><strong>Anterior:</strong> {{ $video->previous }}</p>
-                    <p><strong>Següent:</strong> {{ $video->next }}</p>
-                    <p><strong>Sèrie:</strong> {{ $video->series_id }}</p>
-                    <div class="video-actions">
-                        <a href="{{ route('videos.manage.edit', $video->id) }}" class="btn btn-warning btn-sm">Editar</a>
-                        <form action="{{ route('videos.manage.destroy', $video->id) }}" method="POST" onsubmit="return confirm('Estas segur de que vols eliminiar el vídeo?');" style="display:inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
-                        </form>
+                <div class="video-card">
+                    <h3 class="video-card-title">{{ $video->title }}</h3>
+
+                    <div class="video-card-content">
+                        <div class="video-card-info">
+                            <p class="video-card-description">{{ \Str::limit($video->description, 100) }}</p>
+                            <p class="video-card-meta">
+                                <span class="meta-label">Data:</span>
+                                <span class="meta-value">{{ \Carbon\Carbon::parse($video->published_at)->format('d/m/Y') }}</span>
+                            </p>
+                            <p class="video-card-meta">
+                                <span class="meta-label">Sèrie:</span>
+                                <span class="meta-value">{{ $video->series_id ?: 'Cap' }}</span>
+                            </p>
+                            <a href="{{ $video->url }}" target="_blank" class="video-card-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                    <polyline points="15 3 21 3 21 9"></polyline>
+                                    <line x1="10" y1="14" x2="21" y2="3"></line>
+                                </svg>
+                                Veure vídeo
+                            </a>
+                        </div>
+
+                        <div class="video-card-actions">
+                            <a href="{{ route('videos.manage.edit', $video->id) }}" class="card-btn-edit">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="card-action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                </svg>
+                                Editar
+                            </a>
+                            <form action="{{ route('videos.manage.destroy', $video->id) }}" method="POST" onsubmit="return confirm('Estas segur de que vols eliminiar el vídeo?');" class="card-delete-form">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="card-btn-delete">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="card-action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="3 6 5 6 21 6"></polyline>
+                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                        <line x1="10" y1="11" x2="10" y2="17"></line>
+                                        <line x1="14" y1="11" x2="14" y2="17"></line>
+                                    </svg>
+                                    Eliminar
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             @endforeach
         </div>
-
     </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const flash = document.getElementById('flash-message');
-            if (flash) {
-                setTimeout(() => {
-                    flash.remove();
-                }, 4000); // 4000ms = 4 segons
-            }
-        });
-    </script>
-
     <style>
-        /* Estil personalitzat per a l'alerta */
+        :root {
+            --primary-color: #6366f1;
+            --primary-hover: #4f46e5;
+            --secondary-color: #f43f5e;
+            --secondary-hover: #e11d48;
+            --text-color: #1e293b;
+            --text-light: #64748b;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --border-radius: 16px;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            --transition: all 0.3s ease;
+        }
+
+        .manage-container {
+            max-width: 1280px;
+            margin: 3rem auto;
+            padding: 0 1.5rem;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+        }
+
+        .manage-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .manage-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-color);
+            margin: 0;
+        }
+
+        .btn-create {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.75rem 1.25rem;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .btn-create:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .icon {
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+
         .alert {
-            font-size: 16px;
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 10px;
-            text-align: center;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            font-weight: 500;
+            animation: fadeIn 0.3s ease-in-out, fadeOut 0.5s ease-in-out 3.5s forwards;
+        }
+
+        .alert-icon {
+            width: 1.5rem;
+            height: 1.5rem;
+            flex-shrink: 0;
         }
 
         .alert-success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
+            background-color: #dcfce7;
+            color: #166534;
+            border: 1px solid #86efac;
         }
 
         .alert-danger {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
+            background-color: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
         }
 
-        /* Estil per als botons de creació i accions */
-        .btn-create-video {
-            background-color: #4F46E5;
-            color: white;
-            padding: 10px 20px;
-            text-decoration: none;
-            border-radius: 5px;
-            display: inline-block;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .btn-create-video:hover {
-            background-color: #2b3971;
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
         }
 
-        .btn-danger {
-            background-color: #dc3545;
-            color: white;
-            padding: 10px 20px;
-            text-decoration: none;
-            border-radius: 5px;
-            display: inline-block;
+        .table-container {
+            overflow-x: auto;
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
         }
 
-        .btn-danger:hover {
-            background-color: #c82333;
-        }
-
-        .btn-warning{
-            background-color: #ffc107;
-            color: white;
-            padding: 10px 20px;
-            text-decoration: none;
-            border-radius: 5px;
-            display: inline-block;
-            border: 2px solid #000000;
-        }
-
-        .btn-warning:hover {
-            background-color: #e0a800;
-        }
-
-        .btn-sm {
-            padding: 5px 10px;
-            font-size: 14px;
-        }
-
-        .table {
+        .manage-table {
             width: 100%;
-            margin-top: 20px;
             border-collapse: collapse;
-            border-radius: 8px;
-            overflow: hidden;
         }
 
-        .table th, .table td {
-            padding: 12px;
+        .manage-table th,
+        .manage-table td {
+            padding: 1rem;
             text-align: left;
-            border-bottom: 1px solid #ddd;
         }
 
-        .table th {
-            background-color: #f7f7f7;
-            color: #333;
+        .manage-table th {
+            background-color: #f1f5f9;
+            font-weight: 600;
+            color: var(--text-color);
+            position: sticky;
+            top: 0;
         }
 
-        .table-striped tbody tr:nth-of-type(odd) {
-            background-color: #f9f9f9;
+        .manage-table tr {
+            border-bottom: 1px solid #e2e8f0;
+            transition: background-color 0.2s ease;
         }
 
-        .table-striped tbody tr:nth-of-type(even) {
-            background-color: #e9f5f0;
+        .manage-table tr:hover {
+            background-color: #f8fafc;
         }
 
-        .table-bordered {
-            border: 1px solid #ddd;
+        .manage-table tr:last-child {
+            border-bottom: none;
         }
 
-        /* Afegir color de fons per la capçalera de la taula */
-        .table-header th {
-            background-color: #4F46E5;
-            color: white;
+        .title-cell {
+            font-weight: 600;
+            color: var(--text-color);
+            max-width: 200px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        /* Mode responsive - Estil per a la llista de vídeos */
-        .video-list {
+        .description-cell {
+            color: var(--text-light);
+            max-width: 250px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .url-cell {
+            max-width: 150px;
+        }
+
+        .url-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .url-link:hover {
+            color: var(--primary-hover);
+        }
+
+        .url-icon {
+            width: 1rem;
+            height: 1rem;
+        }
+
+        .date-cell {
+            color: var(--text-light);
+            white-space: nowrap;
+        }
+
+        .series-cell {
+            color: var(--text-light);
+        }
+
+        .actions-cell {
+            white-space: nowrap;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .btn-edit, .btn-delete {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 0.875rem;
+            transition: var(--transition);
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-edit {
+            background-color: #e0f2fe;
+            color: #0284c7;
+        }
+
+        .btn-edit:hover {
+            background-color: #bae6fd;
+        }
+
+        .btn-delete {
+            background-color: #fee2e2;
+            color: #ef4444;
+        }
+
+        .btn-delete:hover {
+            background-color: #fecaca;
+        }
+
+        .action-icon {
+            width: 1rem;
+            height: 1rem;
+        }
+
+        .delete-form {
+            margin: 0;
+        }
+
+        /* Responsive cards for mobile */
+        .video-cards {
             display: none;
         }
 
-        .video-list .video-item {
-            padding: 20px;
-            margin-bottom: 20px;
-            background-color: #f9f9f9;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .video-list .video-item h3 {
-            margin-top: 0;
-            font-size: 18px;
-            color: #333;
-        }
-
-        .video-list .video-item p {
-            font-size: 14px;
-            color: #555;
-        }
-
-        /* Mostrar la llista a dispositius petits */
-        @media (max-width: 768px) {
-            .video-list {
-                display: block;
-            }
-
-            .table-responsive {
+        @media (max-width: 1024px) {
+            .table-container {
                 display: none;
             }
 
-            .btn-create-video {
-                text-align: center;
-                margin-top: 10px;
+            .video-cards {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .video-card {
+                background-color: var(--card-bg);
+                border-radius: var(--border-radius);
+                box-shadow: var(--shadow);
+                overflow: hidden;
+            }
+
+            .video-card-title {
+                padding: 1rem;
+                margin: 0;
+                font-size: 1.125rem;
+                font-weight: 600;
+                color: var(--text-color);
+                background-color: #f1f5f9;
+                border-bottom: 1px solid #e2e8f0;
+            }
+
+            .video-card-content {
+                padding: 1rem;
+            }
+
+            .video-card-info {
+                margin-bottom: 1.5rem;
+            }
+
+            .video-card-description {
+                margin: 0 0 1rem 0;
+                color: var(--text-color);
+            }
+
+            .video-card-meta {
+                margin: 0.5rem 0;
+                font-size: 0.875rem;
+                color: var(--text-light);
+            }
+
+            .meta-label {
+                font-weight: 600;
+                color: var(--text-color);
+            }
+
+            .video-card-link {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                color: var(--primary-color);
+                text-decoration: none;
+                font-weight: 500;
+                margin-top: 0.5rem;
+            }
+
+            .link-icon {
+                width: 1rem;
+                height: 1rem;
+            }
+
+            .video-card-actions {
+                display: flex;
+                gap: 1rem;
+                border-top: 1px solid #e2e8f0;
+                padding-top: 1rem;
+            }
+
+            .card-btn-edit, .card-btn-delete {
+                flex: 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0.5rem;
+                padding: 0.75rem;
+                border-radius: 6px;
+                font-weight: 500;
+                font-size: 0.875rem;
+                transition: var(--transition);
+                text-decoration: none;
+                border: none;
+                cursor: pointer;
+            }
+
+            .card-btn-edit {
+                background-color: #e0f2fe;
+                color: #0284c7;
+            }
+
+            .card-btn-delete {
+                background-color: #fee2e2;
+                color: #ef4444;
+            }
+
+            .card-action-icon {
+                width: 1rem;
+                height: 1rem;
+            }
+
+            .card-delete-form {
+                flex: 1;
+                margin: 0;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .manage-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .btn-create {
+                width: 100%;
+                justify-content: center;
             }
         }
     </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const flashMessage = document.getElementById('flash-message');
+            if (flashMessage) {
+                setTimeout(function() {
+                    flashMessage.style.opacity = '0';
+                    flashMessage.style.transform = 'translateY(-10px)';
+                }, 4000);
+            }
+        });
+    </script>
 </x-videos-app-layout>
