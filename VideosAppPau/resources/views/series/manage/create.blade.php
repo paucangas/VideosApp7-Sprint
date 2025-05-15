@@ -318,7 +318,7 @@
             }
 
             .btn-create, .btn-cancel {
-                width: 100%;
+                width: auto;
             }
         }
 

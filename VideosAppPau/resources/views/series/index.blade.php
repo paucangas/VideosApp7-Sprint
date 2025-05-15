@@ -187,7 +187,7 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            padding: 0.875rem 1.25rem;
+            padding: 0.875rem 0.8rem;
             background-color: var(--primary-color);
             color: white;
             border: none;

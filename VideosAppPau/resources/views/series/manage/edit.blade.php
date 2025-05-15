@@ -109,6 +109,7 @@
 
         .series-edit-title {
             display: flex;
+            overflow: hidden;
             align-items: center;
             gap: 0.75rem;
             font-size: 1.75rem;
@@ -317,7 +318,7 @@
             }
 
             .btn-update, .btn-cancel {
-                width: 100%;
+                width: auto;
             }
         }
     </style>

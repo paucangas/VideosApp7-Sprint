@@ -511,7 +511,7 @@
             }
 
             .btn-create {
-                width: 100%;
+                width: auto;
                 justify-content: center;
             }
         }
